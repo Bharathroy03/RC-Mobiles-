@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Invoices &amp; Billing - RC Mobiles &amp; Services</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="auth.js"></script>
+<script src="license.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary-container": "#001f3f",
+                    "background": "#faf9fc",
+                    "surface-container-high": "#e9e7eb",
+                    "on-surface": "#1a1c1e",
+                    "surface": "#faf9fc",
+                    "primary": "#000613",
+                    "secondary": "#565f6e",
+                    "secondary-container": "#d7e0f2",
+                    "on-secondary-container": "#001f3f",
+                    "surface-container-low": "#f4f3f6"
+                },
+                fontFamily: {
+                    sans: ["'Plus Jakarta Sans'", "Inter", "sans-serif"],
+                    heading: ["'Outfit'", "'Plus Jakarta Sans'", "sans-serif"]
+                }
+            }
+        }
+    }
+</script>
+<link rel="stylesheet" href="styles.css">
+<style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #c4c6cf; border-radius: 10px; }
+</style>
+</head>
+<body class="bg-background text-on-surface font-sans antialiased overflow-hidden flex h-screen">
+
+<!-- Mobile Drawer Backdrop Overlay -->
+<div id="mobileNavBackdrop" onclick="toggleMobileDrawer()" class="no-print fixed inset-0 bg-slate-900/60 z-40 hidden md:hidden transition-opacity"></div>
+
+<!-- Side Navigation Drawer -->
+<nav id="sideNav" class="no-print flex flex-col h-full py-6 bg-surface-container-low border-r border-gray-200 fixed left-0 top-0 w-64 z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+  <div class="px-6 mb-8 flex justify-between items-center">
+    <div>
+      <h1 class="font-heading text-xl font-extrabold text-primary flex items-center">
+        <img id="sidebarLogoImg" alt="RC Mobiles Logo" class="h-8 w-auto inline-block mr-2 object-contain" src="/api/uploads/logo.png" onerror="this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuAXjhHbY0-we_FHBB2d57HhBMEorsnwgyJLjZRGMn3V8ySRRHJBOYi9NbIdjd61FopF81JZ53g2B53agw_S4U3r7Czz7ya3_cGHdchS8y7-Lnn1OuQCDWKg5yMY91Utovo4OovFRdc15BJ-P5_sfRbgcADXN6nGTUAldkuYCyDXqybVEUvQOpl7acV_OtnrhT3DhVfqRfHDW2bwV7lljIqswwN9w5oUFt_HTNc7v9bugXMhxX2rdcLVdpWGFHeJQD_2Ew'">RC Mobiles
+      </h1>
+      <p class="text-xs text-gray-500 font-medium">Invoice ERP for RC Mobiles</p>
+    </div>
+    <button onclick="toggleMobileDrawer()" class="md:hidden text-slate-400 hover:text-slate-800 p-1">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-1">
+    <a href="index.html" class="flex items-center text-gray-600 hover:text-gray-900 hover:bg-gray-200/60 rounded-lg mx-2 px-4 py-3 transition-colors text-left">
+      <span class="material-symbols-outlined mr-3 text-gray-500">point_of_sale</span>
+      <span class="text-sm font-semibold">POS Billing</span>
+    </a>
+    <a href="invoices.html" class="flex items-center bg-secondary-container text-on-secondary-container font-semibold rounded-lg mx-2 px-4 py-3 scale-95 duration-100 text-left">
+      <span class="material-symbols-outlined mr-3 text-on-secondary-container">description</span>
+      <span class="text-sm font-semibold">Invoices</span>
+    </a>
+    <a href="inventory.html" data-license-guard="inventory" class="flex items-center text-gray-600 hover:text-gray-900 hover:bg-gray-200/60 rounded-lg mx-2 px-4 py-3 transition-colors text-left">
+      <span class="material-symbols-outlined mr-3 text-gray-500">inventory_2</span>
+      <span class="text-sm font-semibold">Inventory</span>
+    </a>
+    <a href="mobiles.html" data-license-guard="mobiles" class="flex items-center text-gray-600 hover:text-gray-900 hover:bg-gray-200/60 rounded-lg mx-2 px-4 py-3 transition-colors text-left">
+      <span class="material-symbols-outlined mr-3 text-gray-500">smartphone</span>
+      <span class="text-sm font-semibold">Mobile Stock</span>
+    </a>
+    <a href="accessories.html" data-license-guard="accessories" class="flex items-center text-gray-600 hover:text-gray-900 hover:bg-gray-200/60 rounded-lg mx-2 px-4 py-3 transition-colors text-left">
+      <span class="material-symbols-outlined mr-3 text-gray-500">headphones</span>
+      <span class="text-sm font-semibold">Accessories</span>
+    </a>
+  </div>
+  <div class="mt-auto px-2 pt-3 pb-2 border-t border-gray-200 mx-4">
+    <!-- License Status Badge -->
+    <div id="sidebarLicenseBadge" class="mb-2 px-2 py-2 rounded-xl text-[10px] font-semibold flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity" onclick="typeof openLicenseModal!=='undefined'&&openLicenseModal()" title="License Status">
+    </div>
+    <div class="px-2.5 py-2 bg-slate-100/90 border border-slate-200 rounded-xl text-[10px] text-slate-500 space-y-1">
+      <p class="font-extrabold text-slate-900 leading-tight">&copy; Hreeem Softech Solutions</p>
+      <p class="text-[9px] text-slate-600 font-medium">Dev: <span class="font-bold text-slate-800">Bharath Kumar &amp; Darshan Kumar</span></p>
+      <div class="flex items-center justify-between text-[9px] text-blue-700 font-semibold pt-1 border-t border-slate-200">
+        <a href="https://www.hreeem.com" target="_blank" class="hover:underline">www.hreeem.com</a>
+        <a href="https://wa.me/918453036381" target="_blank" class="text-emerald-700 hover:underline">WA: 8453036381</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full ml-0 md:ml-64 w-full bg-slate-50 overflow-y-auto">
+  <!-- Top App Bar -->
+  <header class="no-print flex justify-between items-center h-16 px-3 sm:px-6 w-full bg-white border-b border-slate-200 shadow-sm z-30 shrink-0 sticky top-0">
+    <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+      <button onclick="toggleMobileDrawer()" class="md:hidden p-1.5 text-slate-700 rounded-xl hover:bg-slate-100 transition-colors shrink-0" title="Toggle Menu">
+        <span class="material-symbols-outlined text-2xl">menu</span>
+      </button>
+      <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 flex items-center justify-center text-primary-container font-bold shrink-0">
+        <span class="material-symbols-outlined text-xl sm:text-2xl">description</span>
+      </div>
+      <div class="min-w-0">
+        <h2 class="text-sm sm:text-lg font-extrabold text-slate-900 leading-tight truncate">Invoices &amp; Billing History</h2>
+        <p class="text-xs text-slate-500 font-medium hidden sm:block truncate">Search, review, reprint, and export customer tax invoices</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <a href="/api/reports/export-excel" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2 sm:px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all shadow-sm flex items-center gap-1 shrink-0" title="Export Excel Workbook">
+        <span class="material-symbols-outlined text-[17px]">table_chart</span>
+        <span class="hidden sm:inline">Excel</span>
+      </a>
+      <a href="/api/reports/export" class="bg-slate-700 hover:bg-slate-800 text-white px-2 sm:px-3 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1 shrink-0" title="Export CSV">
+        <span class="material-symbols-outlined text-[17px]">download</span>
+        <span class="hidden sm:inline">CSV</span>
+      </a>
+      <button onclick="deleteAllInvoices()" class="bg-red-600 hover:bg-red-700 text-white px-2 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1 shrink-0" title="Permanently Delete ALL Invoices">
+        <span class="material-symbols-outlined text-[17px]">delete_forever</span>
+        <span class="hidden sm:inline">Delete All</span>
+      </button>
+      <a href="index.html" class="bg-primary-container hover:bg-slate-900 text-white px-2 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1 shrink-0">
+        <span class="material-symbols-outlined text-[17px]">add</span>
+        <span class="hidden sm:inline">New Invoice</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="p-4 sm:p-8 space-y-6">
+    <!-- Filter Bar -->
+    <div class="no-print bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3">
+      <div class="relative flex-1">
+        <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
+        <input type="text" id="invSearchInput" oninput="loadInvoices()" placeholder="Search invoice #, customer name, mobile, IMEI..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-primary-container focus:outline-none">
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <input type="date" id="invDateFrom" onchange="loadInvoices()" class="border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-primary-container focus:outline-none">
+        <span class="text-xs text-slate-400 font-bold">to</span>
+        <input type="date" id="invDateTo" onchange="loadInvoices()" class="border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-primary-container focus:outline-none">
+        <button onclick="clearDateFilter()" class="text-slate-500 hover:text-slate-800 text-xs font-bold px-2 py-1">Clear</button>
+      </div>
+    </div>
+
+    <!-- Invoices Table (Responsive with horizontal scrolling and no text clipping) -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-x-auto custom-scrollbar">
+      <table class="w-full text-left border-collapse text-xs min-w-[700px]">
+        <thead>
+          <tr class="bg-slate-100/80 text-slate-800 font-extrabold uppercase text-[11px] border-b border-slate-200">
+            <th class="py-3 px-4">Invoice #</th>
+            <th class="py-3 px-4">Date &amp; Time</th>
+            <th class="py-3 px-4">Customer Name</th>
+            <th class="py-3 px-4">Phone</th>
+            <th class="py-3 px-4">Payment Mode</th>
+            <th class="py-3 px-4 text-right">Grand Total (₹)</th>
+            <th class="py-3 px-4 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="invoicesTableBody" class="divide-y divide-slate-100">
+          <tr>
+            <td colspan="7" class="py-8 text-center text-slate-400 font-medium">Loading invoices...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Fixed Mobile Bottom Navigation Bar (1-Tap Fast Switching) -->
+  <nav class="no-print md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 z-30 flex items-center justify-around px-2 shadow-lg">
+    <a href="index.html" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-500 hover:text-slate-900 font-semibold">
+      <span class="material-symbols-outlined text-xl">point_of_sale</span>
+      <span class="text-[10px]">Billing</span>
+    </a>
+    <a href="invoices.html" class="flex flex-col items-center justify-center flex-1 py-1 text-primary-container font-black">
+      <span class="material-symbols-outlined text-xl text-primary-container">description</span>
+      <span class="text-[10px]">Invoices</span>
+    </a>
+    <a href="inventory.html" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-500 hover:text-slate-900 font-semibold">
+      <span class="material-symbols-outlined text-xl">inventory_2</span>
+      <span class="text-[10px]">Stock</span>
+    </a>
+    <a href="mobiles.html" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-500 hover:text-slate-900 font-semibold">
+      <span class="material-symbols-outlined text-xl">smartphone</span>
+      <span class="text-[10px]">Mobiles</span>
+    </a>
+    <a href="accessories.html" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-500 hover:text-slate-900 font-semibold">
+      <span class="material-symbols-outlined text-xl">headphones</span>
+      <span class="text-[10px]">Accessories</span>
+    </a>
+  </nav>
+</main>
+
+<script>
+const API_BASE = "";
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadInvoices();
+});
+
+async function loadInvoices() {
+    const search = document.getElementById("invSearchInput").value.trim();
+    const df = document.getElementById("invDateFrom").value;
+    const dt = document.getElementById("invDateTo").value;
+
+    try {
+        const res = await fetch(`${API_BASE}/api/invoices?search=${encodeURIComponent(search)}&date_from=${df}&date_to=${dt}`);
+        if (res.ok) {
+            const invoices = await res.json();
+            renderInvoices(invoices);
+        }
+    } catch (err) {
+        console.error("Load invoices error:", err);
+    }
+}
+
+function renderInvoices(invoices) {
+    const tbody = document.getElementById("invoicesTableBody");
+    if (!invoices || invoices.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400 font-medium">No invoices found matching your criteria.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = invoices.map(inv => `
+        <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="py-3 px-4 font-black text-blue-900">${escapeHtml(inv.invoice_number)}</td>
+            <td class="py-3 px-4 text-slate-600 font-semibold">${inv.formatted_date || inv.invoice_date || ''}</td>
+            <td class="py-3 px-4 font-extrabold text-slate-900">${escapeHtml(inv.customer_name || 'Cash Customer')}</td>
+            <td class="py-3 px-4 text-slate-600 font-medium">${escapeHtml(inv.customer_phone || 'N/A')}</td>
+            <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-900 uppercase">${escapeHtml(inv.payment_mode || 'Cash')}</span></td>
+            <td class="py-3 px-4 text-right font-black text-slate-900 text-sm">₹${(inv.grand_total || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+            <td class="py-3 px-4 text-center">
+                <div class="flex items-center justify-center gap-1.5">
+                    <a href="index.html?edit=${inv.id}&print=1" class="bg-primary-container hover:bg-slate-900 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm inline-flex items-center gap-1" title="View & Print A4 Sheet">
+                        <span class="material-symbols-outlined text-sm">print</span> Print
+                    </a>
+                    <a href="index.html?edit=${inv.id}" class="bg-amber-500 hover:bg-amber-600 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm inline-flex items-center gap-1" title="Edit Invoice Details & Items">
+                        <span class="material-symbols-outlined text-sm">edit</span> Edit
+                    </a>
+                    <button onclick="deleteInvoiceRecord(${inv.id}, '${escapeJs(inv.invoice_number)}')" class="bg-rose-500 hover:bg-rose-600 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm inline-flex items-center gap-1" title="Delete Invoice">
+                        <span class="material-symbols-outlined text-sm">delete</span> Delete
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join("");
+}
+
+// Dialog & Toast Helpers
+function showToast(message, type = "info", duration = 3500) {
+    const container = document.getElementById("appToastContainer");
+    if (!container) return;
+    const toastId = "toast-" + Date.now();
+    let icon = type === "success" ? "check_circle" : (type === "error" ? "error" : "info");
+    let bgBorder = type === "success" ? "border-emerald-200" : (type === "error" ? "border-red-200" : "border-blue-200");
+    let iconColor = type === "success" ? "text-emerald-600 bg-emerald-50" : (type === "error" ? "text-red-600 bg-red-50" : "text-blue-600 bg-blue-50");
+    
+    const toastEl = document.createElement("div");
+    toastEl.id = toastId;
+    toastEl.className = `pointer-events-auto flex items-center gap-3 shadow-xl rounded-xl border bg-white p-3.5 transition-all transform duration-300 translate-y-3 opacity-0 ${bgBorder}`;
+    toastEl.innerHTML = `
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${iconColor}">
+            <span class="material-symbols-outlined text-lg">${icon}</span>
+        </div>
+        <div class="flex-1 text-xs font-semibold text-slate-800 leading-snug break-words">${message}</div>
+    `;
+    container.appendChild(toastEl);
+    requestAnimationFrame(() => { toastEl.classList.remove("translate-y-3", "opacity-0"); toastEl.classList.add("translate-y-0", "opacity-100"); });
+    setTimeout(() => { toastEl.classList.add("opacity-0", "translate-x-6"); setTimeout(() => toastEl.remove(), 300); }, duration);
+}
+
+function showAppDialog({ title = "Notice", message = "", type = "info", confirmText = "OK", cancelText = null }) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById("appDialogModal");
+        if (!modal) { resolve(true); return; }
+        document.getElementById("appDialogTitle").textContent = title;
+        document.getElementById("appDialogMessage").textContent = message;
+        const confirmBtn = document.getElementById("appDialogConfirmBtn");
+        const cancelBtn = document.getElementById("appDialogCancelBtn");
+        confirmBtn.textContent = confirmText;
+        if (cancelText) { cancelBtn.textContent = cancelText; cancelBtn.classList.remove("hidden"); } else { cancelBtn.classList.add("hidden"); }
+        modal.classList.remove("hidden");
+        const cleanup = () => { modal.classList.add("hidden"); confirmBtn.onclick = null; cancelBtn.onclick = null; };
+        confirmBtn.onclick = () => { cleanup(); resolve(true); };
+        cancelBtn.onclick = () => { cleanup(); resolve(false); };
+    });
+}
+
+async function deleteInvoiceRecord(id, invNo) {
+    const confirmed = await showAppDialog({
+        title: "Delete Invoice?",
+        message: `Are you sure you want to permanently delete invoice "${invNo}"? This action cannot be undone.`,
+        type: "warning",
+        confirmText: "Delete",
+        cancelText: "Cancel"
+    });
+
+    if (!confirmed) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/api/invoices/${id}`, {
+            method: "DELETE"
+        });
+
+        if (res.ok) {
+            showToast(`Invoice ${invNo} deleted successfully`, "info");
+            loadInvoices();
+        } else {
+            const err = await res.json();
+            showAppDialog({
+                title: "Delete Failed",
+                message: err.error || "Failed to delete invoice",
+                type: "error"
+            });
+        }
+    } catch (err) {
+        console.error("Delete invoice error:", err);
+        showToast("Server connection error", "error");
+    }
+}
+
+function escapeHtml(str) { if (!str) return ''; return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+function escapeJs(str) { if (!str) return ''; return str.replace(/'/g, "\\'"); }
+
+async function deleteAllInvoices() {
+    // Step 1 — First warning
+    const step1 = await showAppDialog({
+        title: "⚠️ Delete ALL Invoices?",
+        message: "This will permanently delete EVERY invoice and all line items from the database. This action CANNOT be undone. Are you absolutely sure?",
+        type: "warning",
+        confirmText: "Yes, Proceed",
+        cancelText: "Cancel"
+    });
+    if (!step1) return;
+
+    // Step 2 — Final confirmation
+    const step2 = await showAppDialog({
+        title: "🔴 Final Confirmation",
+        message: "LAST CHANCE: All invoice records will be wiped permanently. Click 'Delete Everything' to confirm.",
+        type: "warning",
+        confirmText: "Delete Everything",
+        cancelText: "No, Go Back"
+    });
+    if (!step2) return;
+
+    // Execute
+    try {
+        showToast("Deleting all invoices... Please wait.", "info", 5000);
+        const res = await fetch(`${API_BASE}/api/invoices/all`, { method: "POST" });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            showToast(data.message || "All invoices deleted successfully.", "success", 4500);
+            loadInvoices();
+        } else {
+            showAppDialog({ title: "Error", message: data.error || "Failed to delete invoices.", type: "error" });
+        }
+    } catch (err) {
+        console.error("Delete all invoices error:", err);
+        showToast("Server error while deleting invoices.", "error");
+    }
+}
+</script>
+
+<!-- GLOBAL TOAST NOTIFICATION CONTAINER -->
+<div id="appToastContainer" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2.5 pointer-events-none max-w-sm w-full"></div>
+
+<!-- CUSTOM IN-APP ALERT / CONFIRM DIALOG MODAL -->
+<div id="appDialogModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9998] hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-100">
+    <div class="flex items-start gap-3.5">
+      <div id="appDialogIconBg" class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-amber-100 text-amber-600">
+        <span id="appDialogIcon" class="material-symbols-outlined text-2xl">warning</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <h3 id="appDialogTitle" class="text-base font-extrabold text-slate-900 leading-snug">Notice</h3>
+        <p id="appDialogMessage" class="text-xs text-slate-600 mt-1 leading-relaxed break-words">Message goes here...</p>
+      </div>
+    </div>
+    <div class="flex justify-end items-center gap-2.5 pt-2 border-t border-slate-100">
+      <button type="button" id="appDialogCancelBtn" class="hidden px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg">Cancel</button>
+      <button type="button" id="appDialogConfirmBtn" class="px-5 py-2 text-xs font-extrabold text-white bg-rose-600 hover:bg-rose-700 rounded-lg">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function renderLicenseBadge(){
+    const badge=document.getElementById("sidebarLicenseBadge");
+    if(!badge)return;
+    const licensed=typeof isLicenseActive==="function"&&isLicenseActive();
+    const plan=typeof getLicensePlan==="function"&&getLicensePlan();
+    if(licensed){
+      badge.style.cssText="background:#f0fdf4;border:1px solid #bbf7d0;padding:8px 10px;border-radius:10px;display:flex;align-items:center;gap:6px;cursor:default;";
+      badge.innerHTML=`<span class="material-symbols-outlined" style="color:#16a34a;font-size:16px;">verified</span><span style="font-size:10px;font-weight:800;color:#15803d;">PRO ACTIVE</span><span style="font-size:9px;color:#4ade80;margin-left:auto;background:#dcfce7;padding:2px 6px;border-radius:99px;">${plan||'Advanced'}</span>`;
+      badge.onclick=null;
+    }else{
+      badge.style.cssText="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fcd34d;padding:8px 10px;border-radius:10px;display:flex;align-items:center;gap:6px;cursor:pointer;";
+      badge.innerHTML='<span class="material-symbols-outlined" style="color:#d97706;font-size:16px;">lock</span><span style="font-size:10px;font-weight:800;color:#92400e;">Activate License</span><span style="font-size:9px;color:#ea580c;margin-left:auto;">PRO</span>';
+      badge.onclick=()=>typeof openLicenseModal!=="undefined"&&openLicenseModal();
+    }
+  }
+  if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",()=>setTimeout(renderLicenseBadge,200));}else{setTimeout(renderLicenseBadge,200);}
+})();
+</script>
+</body>
+</html>
