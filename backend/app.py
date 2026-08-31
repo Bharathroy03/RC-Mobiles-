@@ -12,11 +12,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # Load environment variables
 load_dotenv()
 
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://bjxozcjubwzvuqanvqsp.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", os.getenv("SUPABASE_KEY", ""))
+DEFAULT_SUPABASE_URL = "https://bjxozcjubwzvuqanvqsp.supabase.co"
+DEFAULT_SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqeG96Y2p1Ynd6dnVxYW52cXNwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4ODA3MjMxMSwiZXhwIjoyMTAzNjQ4MzExfQ.SA0ToZWA1HdGjexNefDz77A2CVpZWv2tPpJ6nuKxT_c"
 
-if not SUPABASE_KEY:
-    print("WARNING: SUPABASE_SERVICE_ROLE_KEY or SUPABASE_KEY not set in backend/.env!")
+SUPABASE_URL = os.getenv("SUPABASE_URL", DEFAULT_SUPABASE_URL)
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", os.getenv("SUPABASE_KEY", DEFAULT_SUPABASE_KEY))
 
 # Initialize Supabase Client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -25,13 +25,27 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 app = Flask(__name__, static_folder="../frontend", static_url_path="")
 CORS(app)
 
-# Ensure upload directory exists
-UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+# Ensure upload directory exists (handle serverless /tmp if read-only filesystem)
+IS_SERVERLESS = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
+if IS_SERVERLESS:
+    UPLOAD_FOLDER = "/tmp/uploads"
+    AUTH_DB_PATH = "/tmp/rc_mobiles.db"
+    orig_db = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rc_mobiles.db")
+    if os.path.exists(orig_db) and not os.path.exists(AUTH_DB_PATH):
+        try:
+            import shutil
+            shutil.copyfile(orig_db, AUTH_DB_PATH)
+        except Exception:
+            pass
+else:
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
+    AUTH_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rc_mobiles.db")
 
-# Authentication & User Management DB
-AUTH_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rc_mobiles.db")
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except Exception:
+    pass
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 def init_auth_db():
     conn = sqlite3.connect(AUTH_DB_PATH)
