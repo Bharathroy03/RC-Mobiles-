@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import sys
 import sqlite3
@@ -105,10 +106,16 @@ def init_auth_db():
             ON CONFLICT(license_key) DO NOTHING
         """, (key_val, plan))
 
-    conn.commit()
-    conn.close()
+    try:
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print("Warning: init_auth_db commit error:", e)
 
-init_auth_db()
+try:
+    init_auth_db()
+except Exception as e:
+    print("Warning: init_auth_db startup error:", e)
 
 # ---------------- GLOBAL EXCEPTION & ERROR HANDLERS ----------------
 @app.errorhandler(400)
@@ -154,7 +161,7 @@ def handle_generic_exception(e):
 
 @app.route("/api/license/activate", methods=["POST"])
 def activate_license():
-    """Validate and activate a product license key. Multi-device — no device binding."""
+    """Validate and activate a product license key. Multi-device - no device binding."""
     data = request.json or {}
     raw_key = (data.get("license_key") or "").strip().upper()
 
@@ -248,7 +255,7 @@ def check_license_status():
 
 @app.route("/api/license/keys", methods=["GET"])
 def list_license_keys():
-    """Admin-only: list all license keys (never exposes raw keys in UI — for debugging)."""
+    """Admin-only: list all license keys (never exposes raw keys in UI - for debugging)."""
     try:
         conn = sqlite3.connect(AUTH_DB_PATH)
         cur = conn.cursor()
@@ -1241,7 +1248,7 @@ def export_invoices_excel():
 
         # Title Block
         ws1.merge_cells("A1:K1")
-        ws1["A1"] = "RC MOBILES & SERVICES — GST SALES INVOICE REGISTER"
+        ws1["A1"] = "RC MOBILES & SERVICES - GST SALES INVOICE REGISTER"
         ws1["A1"].font = font_title
         ws1["A1"].alignment = align_left
 
@@ -1362,7 +1369,7 @@ def export_invoices_excel():
         ws2.views.sheetView[0].showGridLines = True
 
         ws2.merge_cells("A1:K1")
-        ws2["A1"] = "RC MOBILES & SERVICES — DETAILED ITEM-WISE SALES REGISTER"
+        ws2["A1"] = "RC MOBILES & SERVICES - DETAILED ITEM-WISE SALES REGISTER"
         ws2["A1"].font = font_title
 
         headers_s2 = [
@@ -1391,9 +1398,9 @@ def export_invoices_excel():
 
             for itm in (inv.get("invoice_items") or []):
                 p_name = itm.get("product_name") or itm.get("name") or "Product"
-                p_brand = itm.get("brand") or "—"
+                p_brand = itm.get("brand") or "-"
                 hsn = itm.get("hsn_code") or "8517"
-                imei = itm.get("imei") or itm.get("serial_number") or "—"
+                imei = itm.get("imei") or itm.get("serial_number") or "-"
                 qty = int(itm.get("quantity") or itm.get("qty") or 1)
                 rate = float(itm.get("unit_price") or itm.get("price") or 0.0)
                 tot = float(itm.get("total") or (qty * rate))
