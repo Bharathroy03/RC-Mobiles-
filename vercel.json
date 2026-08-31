@@ -1,4 +1,4 @@
-﻿{
+{
   "version": 2,
   "rewrites": [
     {
@@ -7,7 +7,7 @@
     },
     {
       "source": "/Images/(.*)",
-      "destination": "/Images/"
+      "destination": "/Images/$1"
     },
     {
       "source": "/",
@@ -15,7 +15,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/frontend/"
+      "destination": "/frontend/$1"
     }
   ]
 }
